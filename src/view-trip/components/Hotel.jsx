@@ -38,7 +38,6 @@ function Hotels({ trip }) {
   };
   
   const handleImageError = (hotelName) => {
-    // Remove the failed URL from state
     setHotelImages(prev => {
       const updated = {...prev};
       delete updated[hotelName];

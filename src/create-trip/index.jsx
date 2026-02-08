@@ -7,23 +7,20 @@ import { createChatSession, sendMessage } from "../service/AIModel";
 import { useGoogleLogin } from '@react-oauth/google';
 import { Dialog, DialogContent, DialogTitle, DialogActions } from '@mui/material';
 import axios from 'axios';
-import { doc, setDoc } from 'firebase/firestore'; // Added missing imports
-import { db } from '../service/firebaseConfig'; // Import db
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { doc, setDoc } from 'firebase/firestore'; 
+import { db } from '../service/firebaseConfig'; 
+import { useNavigate } from "react-router-dom"; 
 
 function CreateTrip() {
   const [place, setPlace] = useState();
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState({});
   const [generatedTrip, setGeneratedTrip] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  
-  // Create chat session on component mount
   const [chatSession, setChatSession] = useState(null);
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Initialize chat session when component mounts
     setChatSession(createChatSession());
   }, []);
 
@@ -38,12 +35,11 @@ function CreateTrip() {
     console.log(formData);
   }, [formData]);
 
-  // // This is for login
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => {
       GetUserProfile(codeResponse);
       setOpenDialog(false);
-      onGenerateTrip(true); // Call generate trip again after successful login
+      onGenerateTrip(true); 
     },
     onError: (error) => {
       console.log(error);
@@ -52,7 +48,6 @@ function CreateTrip() {
   });
 
   const onGenerateTrip = async (isAfterLogin = false) => {
-    // Skip user check if this is called after login
     if (!isAfterLogin) {
       const user = localStorage.getItem('user');
       if (!user) {
@@ -61,7 +56,6 @@ function CreateTrip() {
       }
     }
 
-    // Validate form data
     if (formData?.no_of_days > 5) {
       toast.error("Please enter trip days less than 5 days");
       return;
@@ -72,48 +66,74 @@ function CreateTrip() {
       return;
     }
     
-    // Show loading toast
     toast.success("Trip is Generating...");
     setIsLoading(true);
     
     try {
-      // Replace placeholders in the prompt
+      // Generate dynamic days structure
+      const numDays = parseInt(formData?.no_of_days) || 1;
+      const daysStructure = Array.from({ length: numDays }, (_, i) => `
+      "day${i + 1}": {
+        "bestTimeToVisit": "",
+        "places": [
+          {
+            "geoCoordinates": {
+              "latitude": 0,
+              "longitude": 0
+            },
+            "placeDetails": "",
+            "placeImageUrl": "",
+            "placeName": "",
+            "rating": 0,
+            "ticketPricing": "",
+            "timeSpent": "",
+            "travelTime": "",
+            "theme": ""
+          }
+        ]
+      }`).join(',');
+
       const FINAL_PROMPT = AI_PROMPT
         .replace("{location}", formData?.location?.label)
         .replace("{totalDays}", formData?.no_of_days)
         .replace("{traveler}", formData?.traveler)
         .replace("{budget}", formData?.budget)
-        .replace("{total_days}", formData?.no_of_days);
+        .replace("{total_days}", formData?.no_of_days)
+        .replace("{DAYS_STRUCTURE}", daysStructure);
       
-      console.log("Sending prompt to Gemini:", FINAL_PROMPT);
+      console.log("Sending prompt to AI:", FINAL_PROMPT);
       
-      // Send message to Gemini
       const responseText = await sendMessage(chatSession, FINAL_PROMPT);
       console.log("Raw AI Response:", responseText?.response?.text());
       
-      // Try to parse the response as JSON
       try {
-        // 1. Remove the backticks and "json" identifier (if present)
-        const cleanedResponseText = responseText.trim(); // Remove leading/trailing whitespace
+        let cleanedResponseText = responseText.trim();
+        
+        // Remove common AI response artifacts
+        cleanedResponseText = cleanedResponseText
+          .replace(/```json\s*/g, '')
+          .replace(/```\s*$/g, '')
+          .replace(/^[^{]*({.*})[^}]*$/s, '$1')
+          .replace(/,\s*}/g, '}')  // Fix trailing commas
+          .replace(/,\s*]/g, ']'); // Fix trailing commas in arrays 
         const jsonStartIndex = cleanedResponseText.indexOf('{');
         const jsonEndIndex = cleanedResponseText.lastIndexOf('}');
     
-        let jsonString = cleanedResponseText; //default value
+        let jsonString = cleanedResponseText; 
     
         if (jsonStartIndex !== -1 && jsonEndIndex !== -1) {
             jsonString = cleanedResponseText.substring(jsonStartIndex, jsonEndIndex + 1);
         }
     
-        // 2. Parse the cleaned JSON string
+        console.log("Attempting to parse JSON:", jsonString.substring(0, 200) + "...");
+        
         const parsedResponse = JSON.parse(jsonString);
     
         setGeneratedTrip(parsedResponse);
         console.log("Parsed Trip Data:", parsedResponse);
         toast.success("Trip generated successfully!");
         
-        // Save the generated trip to Firebase
-        await SavedAiTrip(jsonString); // Save the trip to Firebase
-    
+        await SavedAiTrip(jsonString); 
       } catch (parseError) {
         console.error("Error parsing AI response as JSON:", parseError);
         toast.error("Received response but couldn't parse as JSON");
@@ -150,10 +170,8 @@ function CreateTrip() {
       const user = JSON.parse(localStorage.getItem('user'));
       const docId = Date.now().toString();
       
-      console.log("User data:", user); // Debug user data
+      console.log("User data:", user);
       
-      // Use the correct user ID field from Google's response
-      // Google OAuth returns either 'id', 'sub', or 'email' as identifier
       const userId = user?.id || user?.sub || user?.email || 'anonymous-user';
       
       // Add user details to the stored data
@@ -226,8 +244,8 @@ function CreateTrip() {
                 className={`p-4 border rounded-lg cursor-pointer transition duration-200 ease-in-out 
                   hover:shadow-lg hover:border-gray-400
                   ${formData?.budget === item.title ? ' border-3 shadow-lg border-black ' : 'border-gray-300'}
-                `}
-              >
+                `}>
+                
                 <h2 className="text-4xl mb-2">{item.icon}</h2>
                 <h2 className="font-bold text-lg">{item.title}</h2>
                 <p className="text-sm text-gray-500">{item.desc}</p>
@@ -263,7 +281,6 @@ function CreateTrip() {
         </div>
       </div>  
 
-      {/* Google Sign In Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Sign In Required</DialogTitle>
         <DialogContent>
@@ -285,7 +302,6 @@ function CreateTrip() {
         </DialogActions>
       </Dialog>
       
-      {/* Display Generated Trip Summary (Optional) */}
       {generatedTrip && (
         <div className="mt-10 p-6 border border-gray-300 rounded-lg shadow-md">
           <h2 className="font-bold text-2xl mb-4">Your Generated Trip</h2>

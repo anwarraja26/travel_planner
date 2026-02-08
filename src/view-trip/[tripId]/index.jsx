@@ -14,7 +14,6 @@ function Viewtrip() {
     tripId&&GetTripData()
   },[tripId]);
 
-  // to get the trip data from firebase
   const GetTripData=async()=>{
     const docRef=doc(db,'AITrips',tripId);
     const docSnap=await getDoc(docRef);
@@ -30,9 +29,7 @@ function Viewtrip() {
   }
   return (
     <div className='p-10 mf:px-20 lg:px-44 xl:px-56'>
-    {/* Information Section */}
-    {/* Recommended Hotel */}
-    {/* Daily Plan */}
+
       <InfoSection trip={trip} />
       <Hotels trip={trip} />
       <PlacesToVisit trip={trip} />

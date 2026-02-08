@@ -1,0 +1,274 @@
+2025-04-19 00:05:56,243 - Imported existing <module 'comtypes.gen' from 'C:\\Users\\ANWAR RAJA\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-04-19 00:05:56,244 - Using writeable comtypes cache directory: 'C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\comtypes\gen'
+2025-04-19 00:05:56,295 - Could not import comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4: Typelib different than module
+2025-04-19 00:05:56,295 - # Generating comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4
+2025-04-19 00:05:56,417 - Could not import comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0: Typelib different than module
+2025-04-19 00:05:56,417 - # Generating comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0
+2025-04-19 00:05:57,265 - \U0001f7e2 Monitoring Started.
+2025-04-19 00:06:12,153 - AuthMetadataPluginCallback "<google.auth.transport.grpc.AuthMetadataPlugin object at 0x0000021C0A6012E0>" raised exception!
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:2406)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\adapters.py", line 486, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\urllib3\connectionpool.py", line 844, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\urllib3\util\retry.py", line 515, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:2406)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\transport\requests.py", line 186, in __call__
+    response = self.session.request(
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\requests\adapters.py", line 517, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:2406)')))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\grpc\_plugin_wrapping.py", line 105, in __call__
+    self._metadata_plugin(
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\transport\grpc.py", line 95, in __call__
+    callback(self._get_authorization_headers(context), None)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\transport\grpc.py", line 81, in _get_authorization_headers
+    self._credentials.before_request(
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\credentials.py", line 239, in before_request
+    self._blocking_refresh(request)
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\credentials.py", line 202, in _blocking_refresh
+    self.refresh(request)
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\oauth2\service_account.py", line 448, in refresh
+    access_token, expiry, _ = _client.jwt_grant(
+                              ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\oauth2\_client.py", line 299, in jwt_grant
+    response_data = _token_endpoint_request(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\oauth2\_client.py", line 259, in _token_endpoint_request
+    response_status_ok, response_data, retryable_error = _token_endpoint_request_no_throw(
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\oauth2\_client.py", line 192, in _token_endpoint_request_no_throw
+    response = request(
+               ^^^^^^^^
+  File "C:\Users\ANWAR RAJA\AppData\Local\Programs\Python\Python312\Lib\site-packages\google\auth\transport\requests.py", line 192, in __call__
+    raise new_exc from caught_exc
+google.auth.exceptions.TransportError: HTTPSConnectionPool(host='oauth2.googleapis.com', port=443): Max retries exceeded with url: /token (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:2406)')))
+2025-04-19 00:06:20,915 - You have used meet.google.com for 1 time(s), 4 seconds.
+2025-04-19 00:06:21,291 - You have used colab.research.google.com for 1 time(s), 170 seconds.
+2025-04-19 00:06:21,585 - You have used instagram.com for 1 time(s), 50 seconds.
+2025-04-19 00:06:21,895 - You have used colab.research.google.com for 2 time(s), 11 seconds.
+2025-04-19 00:06:22,146 - You have used colab.research.google.com for 3 time(s), 16 seconds.
+2025-04-19 00:06:22,408 - You have used console.firebase.google.com for 1 time(s), 47 seconds.
+2025-04-19 00:06:22,672 - You have used colab.research.google.com for 4 time(s), 48 seconds.
+2025-04-19 00:06:22,937 - You have used instagram.com for 2 time(s), 17 seconds.
+2025-04-19 00:06:23,220 - You have used youtube.com for 1 time(s), 18 seconds.
+2025-04-19 00:06:23,547 - You have used chatgpt.com for 1 time(s), 190 seconds.
+2025-04-19 00:06:23,796 - You have used chatgpt.com for 2 time(s), 67 seconds.
+2025-04-19 00:06:24,094 - You have used console.firebase.google.com for 2 time(s), 8 seconds.
+2025-04-19 00:06:24,405 - You have used google.com for 1 time(s), 12 seconds.
+2025-04-19 00:06:24,639 - You have used youtube.com for 2 time(s), 21 seconds.
+2025-04-19 00:06:24,949 - You have used chatgpt.com for 3 time(s), 22 seconds.
+2025-04-19 00:06:25,231 - You have used notion.so for 1 time(s), 1 seconds.
+2025-04-19 00:06:25,527 - You have used console.firebase.google.com for 3 time(s), 146 seconds.
+2025-04-19 00:06:25,857 - You have used instagram.com for 3 time(s), 36 seconds.
+2025-04-19 00:06:26,137 - You have used hackerrank.com for 1 time(s), 16 seconds.
+2025-04-19 00:06:26,417 - You have used colab.research.google.com for 5 time(s), 82 seconds.
+2025-04-19 00:06:26,683 - You have used console.firebase.google.com for 4 time(s), 103 seconds.
+2025-04-19 00:06:26,964 - You have used meet.google.com for 2 time(s), 4 seconds.
+2025-04-19 00:06:27,243 - You have used instagram.com for 4 time(s), 13 seconds.
+2025-04-19 00:06:27,542 - You have used chatgpt.com for 4 time(s), 25 seconds.
+2025-04-19 00:06:27,916 - You have used instagram.com for 5 time(s), 58 seconds.
+2025-04-19 00:06:28,213 - You have used instagram.com for 6 time(s), 164 seconds.
+2025-04-19 00:06:28,509 - You have used geeksforgeeks.org for 1 time(s), 9 seconds.
+2025-04-19 00:06:28,789 - You have used instagram.com for 7 time(s), 23 seconds.
+2025-04-19 00:06:29,086 - You have used chatgpt.com for 5 time(s), 44 seconds.
+2025-04-19 00:06:29,413 - You have used colab.research.google.com for 6 time(s), 7 seconds.
+2025-04-19 00:06:29,665 - You have used colab.research.google.com for 7 time(s), 4 seconds.
+2025-04-19 00:06:29,992 - You have used google.com for 2 time(s), 9 seconds.
+2025-04-19 00:06:30,321 - You have used colab.research.google.com for 8 time(s), 13 seconds.
+2025-04-19 00:06:30,601 - You have used instagram.com for 8 time(s), 75 seconds.
+2025-04-19 00:06:30,849 - You have used colab.research.google.com for 9 time(s), 396 seconds.
+2025-04-19 00:06:31,095 - You have used instagram.com for 9 time(s), 39 seconds.
+2025-04-19 00:06:31,360 - You have used facebook.com for 1 time(s), 60 seconds.
+2025-04-19 00:06:31,642 - You have used console.firebase.google.com for 5 time(s), 7 seconds.
+2025-04-19 00:06:31,908 - You have used instagram.com for 10 time(s), 13 seconds.
+2025-04-19 00:06:32,219 - You have used colab.research.google.com for 10 time(s), 12 seconds.
+2025-04-19 00:06:32,515 - You have used chatgpt.com for 6 time(s), 14 seconds.
+2025-04-19 00:06:32,764 - You have used instagram.com for 11 time(s), 8 seconds.
+2025-04-19 00:06:33,027 - You have used colab.research.google.com for 11 time(s), 10 seconds.
+2025-04-19 00:06:33,262 - You have used console.firebase.google.com for 6 time(s), 9 seconds.
+2025-04-19 00:06:33,542 - You have used console.firebase.google.com for 7 time(s), 36 seconds.
+2025-04-19 00:06:33,820 - You have used youtube.com for 3 time(s), 87 seconds.
+2025-04-19 00:06:34,117 - You have used chatgpt.com for 7 time(s), 12 seconds.
+2025-04-19 00:06:34,414 - You have used notion.so for 2 time(s), 14 seconds.
+2025-04-19 00:06:34,711 - You have used chatgpt.com for 8 time(s), 4 seconds.
+2025-04-19 00:06:34,932 - You have used colab.research.google.com for 12 time(s), 29 seconds.
+2025-04-19 00:06:34,939 - You have used google.com for 3 time(s), 13 seconds.
+2025-04-19 00:06:34,946 - You have used google.com for 4 time(s), 45 seconds.
+2025-04-19 00:06:34,953 - You have used colab.research.google.com for 13 time(s), 11 seconds.
+2025-04-19 00:06:34,958 - You have used console.firebase.google.com for 8 time(s), 14 seconds.
+2025-04-19 00:06:34,968 - You have used colab.research.google.com for 14 time(s), 105 seconds.
+2025-04-19 00:06:34,974 - You have used youtube.com for 4 time(s), 43 seconds.
+2025-04-19 00:06:34,982 - You have used instagram.com for 12 time(s), 24 seconds.
+2025-04-19 00:06:34,988 - You have used colab.research.google.com for 15 time(s), 54 seconds.
+2025-04-19 00:06:34,994 - You have used geeksforgeeks.org for 2 time(s), 5 seconds.
+2025-04-19 00:06:34,998 - You have used chatgpt.com for 9 time(s), 112 seconds.
+2025-04-19 00:06:35,002 - You have used google.com for 5 time(s), 38 seconds.
+2025-04-19 00:06:35,006 - You have used console.firebase.google.com for 9 time(s), 188 seconds.
+2025-04-19 00:06:35,012 - You have used mail.google.com for 1 time(s), 39 seconds.
+2025-04-19 00:06:35,017 - You have used colab.research.google.com for 16 time(s), 12 seconds.
+2025-04-19 00:06:35,022 - You have used instagram.com for 13 time(s), 156 seconds.
+2025-04-19 00:06:35,025 - You have used youtube.com for 5 time(s), 93 seconds.
+2025-04-19 00:06:35,031 - You have used google.com for 6 time(s), 7 seconds.
+2025-04-19 00:06:35,037 - You have used colab.research.google.com for 17 time(s), 30 seconds.
+2025-04-19 00:06:35,042 - You have used facebook.com for 2 time(s), 57 seconds.
+2025-04-19 00:06:35,045 - You have used leetcode.com for 1 time(s), 24 seconds.
+2025-04-19 00:06:35,050 - You have used console.firebase.google.com for 10 time(s), 38 seconds.
+2025-04-19 00:06:35,055 - You have used colab.research.google.com for 18 time(s), 72 seconds.
+2025-04-19 00:06:35,060 - You have used chatgpt.com for 10 time(s), 105 seconds.
+2025-04-19 00:06:35,063 - You have used facebook.com for 3 time(s), 27 seconds.
+2025-04-19 00:06:35,066 - You have used colab.research.google.com for 19 time(s), 83 seconds.
+2025-04-19 00:06:35,073 - You have used google.com for 7 time(s), 9 seconds.
+2025-04-19 00:06:35,076 - You have used console.firebase.google.com for 11 time(s), 18 seconds.
+2025-04-19 00:06:35,083 - You have used chatgpt.com for 11 time(s), 139 seconds.
+2025-04-19 00:06:35,087 - You have used chatgpt.com for 12 time(s), 24 seconds.
+2025-04-19 00:06:35,090 - You have used console.firebase.google.com for 12 time(s), 157 seconds.
+2025-04-19 00:06:35,094 - You have used console.firebase.google.com for 13 time(s), 170 seconds.
+2025-04-19 00:06:35,096 - You have used facebook.com for 4 time(s), 22 seconds.
+2025-04-19 00:06:35,098 - You have used google.com for 8 time(s), 53 seconds.
+2025-04-19 00:06:35,103 - You have used chatgpt.com for 13 time(s), 43 seconds.
+2025-04-19 00:06:35,108 - You have used instagram.com for 14 time(s), 8 seconds.
+2025-04-19 00:06:35,112 - You have used instagram.com for 15 time(s), 23 seconds.
+2025-04-19 00:06:35,114 - You have used mail.google.com for 2 time(s), 56 seconds.
+2025-04-19 00:06:35,117 - You have used chatgpt.com for 14 time(s), 23 seconds.
+2025-04-19 00:06:35,122 - You have used youtube.com for 6 time(s), 17 seconds.
+2025-04-19 00:06:35,125 - You have used instagram.com for 16 time(s), 55 seconds.
+2025-04-19 00:06:35,128 - You have used google.com for 9 time(s), 9 seconds.
+2025-04-19 00:06:35,131 - You have used notion.so for 3 time(s), 87 seconds.
+2025-04-19 00:06:35,135 - You have used chatgpt.com for 15 time(s), 18 seconds.
+2025-04-19 00:06:35,140 - You have used hackeerrank.com for 1 time(s), 29 seconds.
+2025-04-19 00:06:35,143 - You have used youtube.com for 7 time(s), 54 seconds.
+2025-04-19 00:06:35,147 - You have used youtube.com for 8 time(s), 170 seconds.
+2025-04-19 00:06:35,150 - You have used firebase.google.com for 1 time(s), 18 seconds.
+2025-04-19 00:06:35,157 - You have used instagram.com for 17 time(s), 21 seconds.
+2025-04-19 00:06:35,160 - You have used colab.research.google.com for 20 time(s), 39 seconds.
+2025-04-19 00:06:35,163 - You have used youtube.com for 9 time(s), 6 seconds.
+2025-04-19 00:06:35,166 - You have used google.com for 10 time(s), 1 seconds.
+2025-04-19 00:06:35,171 - You have used hackerrank.com for 2 time(s), 56 seconds.
+2025-04-19 00:06:35,173 - You have used youtube.com for 10 time(s), 62 seconds.
+2025-04-19 00:06:35,177 - You have used chatgpt.com for 16 time(s), 59 seconds.
+2025-04-19 00:06:35,179 - You have used chatgpt.com for 17 time(s), 19 seconds.
+2025-04-19 00:06:35,182 - You have used instagram.com for 18 time(s), 21 seconds.
+2025-04-19 00:06:35,186 - You have used chatgpt.com for 18 time(s), 17 seconds.
+2025-04-19 00:06:35,189 - You have used colab.research.google.com for 21 time(s), 6 seconds.
+2025-04-19 00:06:35,192 - You have used youtube.com for 11 time(s), 21 seconds.
+2025-04-19 00:06:35,195 - You have used youtube.com for 12 time(s), 23 seconds.
+2025-04-19 00:06:35,198 - You have used geeksforgeeks.org for 3 time(s), 22 seconds.
+2025-04-19 00:06:35,200 - You have used notion.so for 4 time(s), 40 seconds.
+2025-04-19 00:06:35,204 - You have used leetcode.com for 2 time(s), 13 seconds.
+2025-04-19 00:06:35,206 - You have used chatgpt.com for 19 time(s), 71 seconds.
+2025-04-19 00:06:35,209 - You have used console.firebase.google.com for 14 time(s), 38 seconds.
+2025-04-19 00:06:35,213 - You have used youtube.com for 13 time(s), 66 seconds.
+2025-04-19 00:06:35,216 - You have used instagram.com for 19 time(s), 21 seconds.
+2025-04-19 00:06:35,222 - You have used console.firebase.google.com for 15 time(s), 51 seconds.
+2025-04-19 00:06:35,226 - You have used instagram.com for 20 time(s), 120 seconds.
+2025-04-19 00:06:35,229 - You have used chatgpt.com for 20 time(s), 16 seconds.
+2025-04-19 00:06:35,231 - You have used chatgpt.com for 21 time(s), 16 seconds.
+2025-04-19 00:06:35,237 - You have used colab.research.google.com for 22 time(s), 10 seconds.
+2025-04-19 00:06:35,241 - You have used colab.research.google.com for 23 time(s), 161 seconds.
+2025-04-19 00:06:35,246 - You have used instagram.com for 21 time(s), 127 seconds.
+2025-04-19 00:06:35,249 - You have used colab.research.google.com for 24 time(s), 72 seconds.
+2025-04-19 00:06:35,254 - You have used chatgpt.com for 22 time(s), 7 seconds.
+2025-04-19 00:06:35,258 - You have used chatgpt.com for 23 time(s), 18 seconds.
+2025-04-19 00:06:35,262 - You have used hackerrank.com for 3 time(s), 149 seconds.
+2025-04-19 00:06:35,265 - You have used colab.research.google.com for 25 time(s), 396 seconds.
+2025-04-19 00:06:35,271 - You have used youtube.com for 14 time(s), 9 seconds.
+2025-04-19 00:06:35,275 - You have used console.firebase.google.com for 16 time(s), 44 seconds.
+2025-04-19 00:06:35,277 - You have used console.firebase.google.com for 17 time(s), 185 seconds.
+2025-04-19 00:06:35,280 - You have used instagram.com for 22 time(s), 54 seconds.
+2025-04-19 00:06:35,282 - You have used colab.research.google.com for 26 time(s), 396 seconds.
+2025-04-19 00:06:35,285 - You have used geeksforgeeks.org for 4 time(s), 24 seconds.
+2025-04-19 00:06:35,289 - You have used youtube.com for 15 time(s), 9 seconds.
+2025-04-19 00:06:35,293 - You have used facebook.com for 5 time(s), 30 seconds.
+2025-04-19 00:06:35,296 - You have used colab.research.google.com for 27 time(s), 38 seconds.
+2025-04-19 00:06:35,298 - You have used chatgpt.com for 24 time(s), 35 seconds.
+2025-04-19 00:06:35,304 - You have used colab.research.google.com for 28 time(s), 33 seconds.
+2025-04-19 00:06:35,307 - You have used colab.research.google.com for 29 time(s), 109 seconds.
+2025-04-19 00:06:35,310 - You have used leetcode.com for 3 time(s), 25 seconds.
+2025-04-19 00:06:35,313 - You have used meet.google.com for 3 time(s), 4 seconds.
+2025-04-19 00:06:35,315 - You have used instagram.com for 23 time(s), 25 seconds.
+2025-04-19 00:06:35,321 - You have used google.com for 11 time(s), 26 seconds.
+2025-04-19 00:06:35,324 - You have used geeksforgeeks.org for 5 time(s), 24 seconds.
+2025-04-19 00:06:35,327 - You have used geeksforgeeks.org for 6 time(s), 41 seconds.
+2025-04-19 00:06:35,330 - You have used leetcode.com for 4 time(s), 4 seconds.
+2025-04-19 00:06:35,334 - You have used colab.research.google.com for 30 time(s), 16 seconds.
+2025-04-19 00:06:35,341 - You have used chatgpt.com for 25 time(s), 16 seconds.
+2025-04-19 00:06:35,348 - You have used hackerrank.com for 4 time(s), 410 seconds.
+2025-04-19 00:06:35,354 - You have used colab.research.google.com for 31 time(s), 42 seconds.
+2025-04-19 00:06:35,359 - You have used chatgpt.com for 26 time(s), 2 seconds.
+2025-04-19 00:06:35,371 - You have used instagram.com for 24 time(s), 73 seconds.
+2025-04-19 00:06:35,377 - You have used google.com for 12 time(s), 33 seconds.
+2025-04-19 00:06:35,382 - You have used console.firebase.google.com for 18 time(s), 171 seconds.
+2025-04-19 00:06:35,390 - You have used instagram.com for 25 time(s), 15 seconds.
+2025-04-19 00:06:35,397 - You have used console.firebase.google.com for 19 time(s), 78 seconds.
+2025-04-19 00:06:35,402 - You have used youtube.com for 16 time(s), 21 seconds.
+2025-04-19 00:06:35,407 - You have used instagram.com for 26 time(s), 14 seconds.
+2025-04-19 00:06:35,411 - You have used chatgpt.com for 27 time(s), 35 seconds.
+2025-04-19 00:06:35,413 - You have used console.firebase.google.com for 20 time(s), 12 seconds.
+2025-04-19 00:06:35,419 - You have used console.firebase.google.com for 21 time(s), 103 seconds.
+2025-04-19 00:06:35,424 - You have used instagram.com for 27 time(s), 22 seconds.
+2025-04-19 00:06:35,427 - You have used youtube.com for 17 time(s), 14 seconds.
+2025-04-19 00:06:35,431 - You have used chatgpt.com for 28 time(s), 3 seconds.
+2025-04-19 00:06:35,436 - You have used console.firebase.google.com for 22 time(s), 118 seconds.
+2025-04-19 00:06:35,439 - You have used google.com for 13 time(s), 16 seconds.
+2025-04-19 00:06:35,442 - You have used hackerrank.com for 5 time(s), 4 seconds.
+2025-04-19 00:06:35,446 - You have used youtube.com for 18 time(s), 54 seconds.
+2025-04-19 00:06:35,452 - You have used youtube.com for 19 time(s), 117 seconds.
+2025-04-19 00:06:35,457 - You have used colab.research.google.com for 32 time(s), 16 seconds.
+2025-04-19 00:06:35,463 - You have used chatgpt.com for 29 time(s), 7 seconds.
+2025-04-19 00:06:35,471 - You have used chatgpt.com for 30 time(s), 157 seconds.
+2025-04-19 00:06:35,478 - You have used facebook.com for 6 time(s), 6 seconds.
+2025-04-19 00:06:35,481 - You have used google.com for 14 time(s), 32 seconds.
+2025-04-19 00:06:35,489 - You have used google.com for 15 time(s), 5 seconds.
+2025-04-19 00:06:35,495 - You have used instagram.com for 28 time(s), 24 seconds.
+2025-04-19 00:06:35,509 - You have used geeksforgeeks.org for 7 time(s), 27 seconds.
+2025-04-19 00:06:35,513 - You have used chatgpt.com for 31 time(s), 7 seconds.
+2025-04-19 00:06:35,517 - You have used geeksforgeeks.org for 8 time(s), 7 seconds.
+2025-04-19 00:06:35,519 - You seem idle. Are you okay?
+2025-04-19 00:06:35,525 - You have used youtube.com for 20 time(s), 27 seconds.
+2025-04-19 00:06:35,530 - You have used colab.research.google.com for 33 time(s), 44 seconds.
+2025-04-19 00:06:35,540 - You have used console.firebase.google.com for 23 time(s), 8 seconds.
+2025-04-19 00:06:35,546 - You have used chatgpt.com for 32 time(s), 8 seconds.
+2025-04-19 00:06:35,552 - You have used colab.research.google.com for 34 time(s), 40 seconds.
+2025-04-19 00:06:35,555 - You have used colab.research.google.com for 35 time(s), 7 seconds.
+2025-04-19 00:06:35,561 - You have used youtube.com for 21 time(s), 58 seconds.
+2025-04-19 00:06:35,565 - You have used instagram.com for 29 time(s), 58 seconds.
+2025-04-19 00:06:35,574 - You have used chatgpt.com for 33 time(s), 24 seconds.
+2025-04-19 00:06:35,579 - You have used instagram.com for 30 time(s), 63 seconds.
+2025-04-19 00:06:35,582 - You have used colab.research.google.com for 36 time(s), 17 seconds.
+2025-04-19 00:06:35,590 - You have used facebook.com for 7 time(s), 26 seconds.
+2025-04-19 00:06:35,593 - You have used chatgpt.com for 34 time(s), 29 seconds.
+2025-04-19 00:06:35,601 - You have used google.com for 16 time(s), 10 seconds.
+2025-04-19 00:06:35,608 - You have used youtube.com for 22 time(s), 108 seconds.
+2025-04-19 00:06:35,612 - You have used chatgpt.com for 35 time(s), 99 seconds.
+2025-04-19 00:06:35,618 - You have used youtube.com for 23 time(s), 42 seconds.
+2025-04-19 00:06:35,622 - You have used colab.research.google.com for 37 time(s), 13 seconds.
+2025-04-19 00:06:35,627 - You have used console.firebase.google.com for 24 time(s), 60 seconds.
+2025-04-19 00:06:35,637 - You have used youtube.com for 24 time(s), 80 seconds.
+2025-04-19 00:06:46,087 - You seem idle. Are you okay?
+2025-04-19 00:07:01,649 - You seem idle. Are you okay?
+2025-04-19 00:07:08,676 - \U0001f534 Monitoring Stopped.

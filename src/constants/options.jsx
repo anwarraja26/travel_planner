@@ -33,7 +33,7 @@ export const SelectBudgetOptions=[
     {
         id:1,
         icon:"😍",
-        title:'Cheap',
+        title:'Affortable',
         desc:'Stay conscious of costs',
     },
     {
@@ -50,4 +50,37 @@ export const SelectBudgetOptions=[
     },
 ]
 
-export const AI_PROMPT= "Generate a travel plan JSON for:\n- Location: {location}\n- Duration: {totalDays} days\n- Travelers: {traveler}\n- Budget: {budget}\n\nReturn ONLY valid JSON with NO additional text, following this exact structure:\n{\n {\n    \"travelPlan\": {\n      \"budget\": \"string\",\n      \"duration\": \"string\",\n      \"hotelOptions\": [\n        {\n          \"description\": \"string\",\n          \"geoCoordinates\": {\n            \"latitude\": number,\n            \"longitude\": number\n          },\n          \"hotelAddress\": \"string\",\n          \"hotelImageUrl\": \"string\",\n          \"hotelName\": \"string\",\n          \"price\": \"string\",\n          \"rating\": number\n        }\n      ],\n      \"itinerary\": {\n        \"day1\": {\n          \"bestTimeToVisit\": {It should be in the time formated string }\"string\",\n          \"places\": [\n            {\n              \"geoCoordinates\": {\n                \"latitude\": number,\n                \"longitude\": number\n              },\n              \"placeDetails\": \"string\",\n              \"placeImageUrl\": \"string\",\n              \"placeName\": \"string\",\n              \"rating\": number,\n              \"ticketPricing\": \"string\",\n              \"timeSpent\": \"string\",\n              \"travelTime\": \"string\",\n              \"theme\": \"string\"\n            }\n          ]\n        }\n      },\n      \"location\": \"string\",\n      \"travelers\": \"string\"\n    }\n  }\n}"
+export const AI_PROMPT= `Generate a travel plan JSON for:
+- Location: {location}
+- Duration: {totalDays} days
+- Travelers: {traveler}
+- Budget: {budget}
+
+CRITICAL REQUIREMENT: You MUST generate exactly {totalDays} days in the itinerary. If {totalDays} is 3, you must generate day1, day2, and day3. If {totalDays} is 5, you must generate day1, day2, day3, day4, and day5. Do NOT default to only 1 day.
+
+Return ONLY valid JSON with NO additional text, following this exact structure:
+{
+  "travelPlan": {
+    "budget": "{budget}",
+    "duration": "{totalDays} days",
+    "hotelOptions": [
+      {
+        "description": "Example Hotel Description",
+        "geoCoordinates": {
+          "latitude": 37.7749,
+          "longitude": -122.4194
+        },
+        "hotelAddress": "123 Main St, Anytown, USA",
+        "hotelImageUrl": "https://example.com/hotel-image.jpg",
+        "hotelName": "Example Hotel",
+        "price": "$200 per night",
+        "rating": 4.5
+      }
+    ],
+    "itinerary": {
+      {DAYS_STRUCTURE}
+    },
+    "location": "{location}",
+    "travelers": "{traveler}"
+  }
+}`

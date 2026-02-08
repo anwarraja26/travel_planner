@@ -7,12 +7,14 @@ function InfoSection({ trip }) {
   const [photoUrl, setPhotoUrl] = useState(null);
   const [imageError, setImageError] = useState(false);
 
+
   useEffect(() => {
     if (trip?.userSelection?.location?.label) {
       setImageError(false); // Reset error state when location changes
       getPlacePhoto(trip.userSelection.location.label);
     }
   }, [trip?.userSelection?.location?.label]);
+
 
   const getPlacePhoto = async (locationName) => {
     try {
@@ -55,6 +57,7 @@ function InfoSection({ trip }) {
       <div className="flex justify-between items-center">
         <div className="my-5 flex flex-col gap-2">
           <h2 className="font-bold text-2xl">{locationLabel}</h2>
+
           <div className="flex gap-5 flex-wrap">
             <h2 className="p-1 px-3 bg-gray-200 rounded-full text-gray-500 text-xs md:text-md">
               📅 {trip.userSelection.no_of_days} Days
@@ -67,7 +70,15 @@ function InfoSection({ trip }) {
             </h2>
           </div>
         </div>
-        <button className="bg-black text-white px-6 py-3 rounded-2xl shadow-md hover:bg-gray-800 transition duration-300 ease-in-out flex items-center justify-center">
+        <button
+          className="bg-black text-white px-6 py-3 rounded-2xl shadow-md hover:bg-gray-800 transition duration-300 ease-in-out flex items-center justify-center"
+          onClick={() => {
+            if (locationLabel) {
+              const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationLabel)}`;
+              window.open(url, '_blank');
+            }
+          }}
+        >
           <IoIosSend />
         </button>
       </div>

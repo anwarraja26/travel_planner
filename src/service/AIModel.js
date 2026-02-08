@@ -1,36 +1,68 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-// Initialize the Google Generative AI with your API key
-const apiKey = "AIzaSyB6Pxff2cK1722IoVDopPwOBDwl1FLXgFE";
-const genAI = new GoogleGenerativeAI(apiKey);
-
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
+// Initialize Groq client
+const groq = new Groq({
+  apiKey: "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", // use .env
+  dangerouslyAllowBrowser: true,
 });
 
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 40,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
-
-// Create a chat session function that can be exported and used in other components
+// Create chat session (manual history)
 export const createChatSession = () => {
-  return model.startChat({
-    generationConfig,
-    history: [],
-  });
+  return [];
 };
 
-// Function to send a message to the model
 export const sendMessage = async (chatSession, message) => {
-  try {
-    const result = await chatSession.sendMessage(message);
-    return result.response.text();
-  } catch (error) {
-    console.error("Error sending message to Gemini:", error);
-    throw error;
+  const maxRetries = 3;
+  let retryCount = 0;
+
+  while (retryCount < maxRetries) {
+    try {
+      // Add user message to history
+      chatSession.push({
+        role: "user",
+        content: message,
+      });
+
+      const completion = await groq.chat.completions.create({
+        model: "llama-3.1-8b-instant",
+        messages: chatSession,
+        temperature: 0.7,
+        max_tokens: 800, // Reduced from 1024 to avoid rate limits
+      });
+
+      const reply = completion.choices[0].message.content;
+
+      // Save assistant reply
+      chatSession.push({
+        role: "assistant",
+        content: reply,
+      });
+
+      return reply;
+    } catch (error) {
+      console.error(`Error sending message to Groq (attempt ${retryCount + 1}):`, error);
+      
+      // Check if it's a rate limit error
+      if (error.error?.type === 'rate_limit_exceeded' || error.status === 429) {
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          throw new Error('Rate limit exceeded. Please wait a few minutes and try again.');
+        }
+        
+        // Extract wait time from error message or use exponential backoff
+        const waitTime = error.error?.message?.match(/(\d+\.?\d*)s/) 
+          ? parseFloat(error.error.message.match(/(\d+\.?\d*)s/)[1]) * 1000
+          : Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
+        
+        console.log(`Rate limit hit. Waiting ${waitTime}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      } else {
+        // For non-rate-limit errors, don't retry
+        throw error;
+      }
+    }
   }
+  
+  throw new Error('Failed to generate trip after multiple attempts.');
 };
