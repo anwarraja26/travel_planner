@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import logo from '../../assets/logo.svg'; // Adjust the path to your logo
-
+import logo from '../../assets/logo.svg'; 
 
 function Header() {
   const [user, setUser] = useState(null);
@@ -58,17 +57,6 @@ function Header() {
             <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
                 {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
               </div>
-            {/* {user.picture ? (
-              <img 
-                src={user.picture} 
-                alt={user.name} 
-                className="w-8 h-8 rounded-full"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-              </div>
-            )} */}
             <span className="text-sm font-medium text-gray-700">
               {user.name}
             </span>

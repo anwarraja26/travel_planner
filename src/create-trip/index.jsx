@@ -24,6 +24,68 @@ function CreateTrip() {
     setChatSession(createChatSession());
   }, []);
 
+  const buildFallbackTrip = (formData) => {
+    const totalDays = parseInt(formData?.no_of_days) || 1;
+    const locationLabel = formData?.location?.label || "Your Destination";
+    const travelerLabel = formData?.traveler || "Travelers";
+    const budgetLabel = formData?.budget || "Moderate";
+
+    const itinerary = {};
+
+    for (let i = 1; i <= totalDays; i++) {
+      itinerary[`day${i}`] = {
+        bestTimeToVisit: "Daytime",
+        places: [
+          {
+            geoCoordinates: {
+              latitude: 0,
+              longitude: 0,
+            },
+            placeDetails: `Explore key attractions and local spots in ${locationLabel}.`,
+            placeImageUrl: "",
+            placeName: `${locationLabel} Highlights`,
+            rating: 4,
+            ticketPricing: "Varies",
+            timeSpent: "4-6 hours",
+            travelTime: "15-30 minutes",
+            theme: "Sightseeing",
+          },
+        ],
+      };
+    }
+
+    const priceLabel =
+      budgetLabel === "Affortable"
+        ? "Budget friendly stay"
+        : budgetLabel === "Moderate"
+        ? "Mid-range stay"
+        : "Premium stay";
+
+    return {
+      travelPlan: {
+        budget: budgetLabel,
+        duration: `${totalDays} days`,
+        hotelOptions: [
+          {
+            description: `${budgetLabel} stay in ${locationLabel}`,
+            geoCoordinates: {
+              latitude: 0,
+              longitude: 0,
+            },
+            hotelAddress: locationLabel,
+            hotelImageUrl: "",
+            hotelName: "Recommended Hotel",
+            price: priceLabel,
+            rating: 4.2,
+          },
+        ],
+        itinerary,
+        location: locationLabel,
+        travelers: travelerLabel,
+      },
+    };
+  };
+
   const handleInputChange = (name, value) => {
     setFormData({
       ...formData,
@@ -70,7 +132,6 @@ function CreateTrip() {
     setIsLoading(true);
     
     try {
-      // Generate dynamic days structure
       const numDays = parseInt(formData?.no_of_days) || 1;
       const daysStructure = Array.from({ length: numDays }, (_, i) => `
       "day${i + 1}": {
@@ -104,7 +165,7 @@ function CreateTrip() {
       console.log("Sending prompt to AI:", FINAL_PROMPT);
       
       const responseText = await sendMessage(chatSession, FINAL_PROMPT);
-      console.log("Raw AI Response:", responseText?.response?.text());
+      console.log("Raw AI Response:", responseText);
       
       try {
         let cleanedResponseText = responseText.trim();
@@ -114,8 +175,8 @@ function CreateTrip() {
           .replace(/```json\s*/g, '')
           .replace(/```\s*$/g, '')
           .replace(/^[^{]*({.*})[^}]*$/s, '$1')
-          .replace(/,\s*}/g, '}')  // Fix trailing commas
-          .replace(/,\s*]/g, ']'); // Fix trailing commas in arrays 
+          .replace(/,\s*}/g, '}')  
+          .replace(/,\s*]/g, ']'); 
         const jsonStartIndex = cleanedResponseText.indexOf('{');
         const jsonEndIndex = cleanedResponseText.lastIndexOf('}');
     
@@ -128,21 +189,41 @@ function CreateTrip() {
         console.log("Attempting to parse JSON:", jsonString.substring(0, 200) + "...");
         
         const parsedResponse = JSON.parse(jsonString);
-    
+
         setGeneratedTrip(parsedResponse);
         console.log("Parsed Trip Data:", parsedResponse);
         toast.success("Trip generated successfully!");
-        
-        await SavedAiTrip(jsonString); 
+
+        await SavedAiTrip(jsonString);
       } catch (parseError) {
         console.error("Error parsing AI response as JSON:", parseError);
-        toast.error("Received response but couldn't parse as JSON");
         console.log("Non-JSON response:", responseText);
+
+        const fallbackTrip = buildFallbackTrip(formData);
+        setGeneratedTrip(fallbackTrip);
+
+        try {
+          await SavedAiTrip(JSON.stringify(fallbackTrip));
+          toast.success("AI response invalid, generated a basic trip instead.");
+        } catch (saveError) {
+          console.error("Error saving fallback trip:", saveError);
+          toast.error("AI failed and could not save basic trip. Please try again.");
+        }
       }
       
     } catch (error) {
       console.error("Error generating trip:", error);
-      toast.error("Failed to generate trip. Please try again.");
+
+      const fallbackTrip = buildFallbackTrip(formData);
+      setGeneratedTrip(fallbackTrip);
+
+      try {
+        await SavedAiTrip(JSON.stringify(fallbackTrip));
+        toast.success("AI unavailable, generated a basic trip instead.");
+      } catch (saveError) {
+        console.error("Error saving fallback trip:", saveError);
+        toast.error("Failed to generate trip, even basic fallback. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -315,5 +396,4 @@ function CreateTrip() {
     </div>
   );
 }
-
 export default CreateTrip;

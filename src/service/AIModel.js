@@ -2,11 +2,10 @@ import Groq from "groq-sdk";
 
 // Initialize Groq client
 const groq = new Groq({
-  apiKey: "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", // use .env
+  apiKey: import.meta.env.GROQ_API_KEY, // use .env
   dangerouslyAllowBrowser: true,
 });
 
-// Create chat session (manual history)
 export const createChatSession = () => {
   return [];
 };
@@ -17,7 +16,6 @@ export const sendMessage = async (chatSession, message) => {
 
   while (retryCount < maxRetries) {
     try {
-      // Add user message to history
       chatSession.push({
         role: "user",
         content: message,
@@ -27,12 +25,12 @@ export const sendMessage = async (chatSession, message) => {
         model: "llama-3.1-8b-instant",
         messages: chatSession,
         temperature: 0.7,
-        max_tokens: 800, // Reduced from 1024 to avoid rate limits
+
+        max_tokens: 1500,
       });
 
       const reply = completion.choices[0].message.content;
 
-      // Save assistant reply
       chatSession.push({
         role: "assistant",
         content: reply,
