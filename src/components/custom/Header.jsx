@@ -18,14 +18,11 @@ function Header() {
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       try {
-        const res = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${codeResponse?.access_token}`, {
-          headers: {
-            Authorization: `Bearer ${codeResponse?.access_token}`,
-            Accept: 'application/json',
-          },
+        const res = await axios.post('/api/auth/google', {
+          access_token: codeResponse?.access_token,
         });
 
-        const userData = res.data;
+        const userData = res.data.user;
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
         toast.success("Signed in successfully!");

@@ -22,11 +22,9 @@ function InfoSection({ trip }) {
       const result = await GetPlaceDetails(data);
 
       const photoName = result.data?.places?.[0]?.photos?.[0]?.name;
-      const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY;
 
       if (photoName) {
-        // ✅ Use the direct image URL with API key in query params (same as Hotels.jsx)
-        const directPhotoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=900&maxWidthPx=1200&key=${apiKey}`;
+        const directPhotoUrl = `/api/places/photo?photoName=${encodeURIComponent(photoName)}&maxHeightPx=900&maxWidthPx=1200`;
         setPhotoUrl(directPhotoUrl);
       } else {
         console.log("No photo found");

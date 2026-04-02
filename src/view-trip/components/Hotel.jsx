@@ -25,8 +25,8 @@ function Hotels({ trip }) {
         const result = await GetPlaceDetails(data);
         if (result.data?.places?.[0]?.photos?.[0]?.name) {
           const photoName = result.data.places[0].photos[0].name;
-          const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY;
-          const photoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=600&key=${apiKey}`;
+          // Use backend photo proxy so the API key is never exposed in the browser
+          const photoUrl = `/api/places/photo?photoName=${encodeURIComponent(photoName)}&maxHeightPx=400&maxWidthPx=600`;
           newHotelImages[hotel.hotelName] = photoUrl;
         }
       } catch (error) {

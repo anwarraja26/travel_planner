@@ -1,11 +1,3 @@
-import Groq from "groq-sdk";
-
-// Initialize Groq client
-const groq = new Groq({
-  apiKey: import.meta.env.GROQ_API_KEY, // use .env
-  dangerouslyAllowBrowser: true,
-});
-
 export const createChatSession = () => {
   return [];
 };
@@ -16,20 +8,29 @@ export const sendMessage = async (chatSession, message) => {
 
   while (retryCount < maxRetries) {
     try {
+      // Add the new user message locally first
       chatSession.push({
         role: "user",
         content: message,
       });
 
-      const completion = await groq.chat.completions.create({
-        model: "llama-3.1-8b-instant",
-        messages: chatSession,
-        temperature: 0.7,
-
-        max_tokens: 1500,
+      // Call backend API instead of hitting the model directly from the browser
+      const response = await fetch("/api/ai-plan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages: chatSession }),
       });
 
-      const reply = completion.choices[0].message.content;
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        const errorMessage = errorBody.error || `Backend error: ${response.status}`;
+        throw new Error(errorMessage);
+      }
+
+      const data = await response.json();
+      const reply = data.reply;
 
       chatSession.push({
         role: "assistant",
@@ -38,7 +39,7 @@ export const sendMessage = async (chatSession, message) => {
 
       return reply;
     } catch (error) {
-      console.error(`Error sending message to Groq (attempt ${retryCount + 1}):`, error);
+      console.error(`Error sending message to AI backend (attempt ${retryCount + 1}):`, error);
       
       // Check if it's a rate limit error
       if (error.error?.type === 'rate_limit_exceeded' || error.status === 429) {

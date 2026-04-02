@@ -1,6 +1,4 @@
-import React from "react";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { SelectBudgetOptions, SelectTravelsList, AI_PROMPT } from "../constants/options";
 import toast from 'react-hot-toast';
 import { createChatSession, sendMessage } from "../service/AIModel";
@@ -10,6 +8,7 @@ import axios from 'axios';
 import { doc, setDoc } from 'firebase/firestore'; 
 import { db } from '../service/firebaseConfig'; 
 import { useNavigate } from "react-router-dom"; 
+import { fetchPlaceSuggestions } from "../service/PlacesAutocomplete";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
@@ -18,11 +17,43 @@ function CreateTrip() {
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [chatSession, setChatSession] = useState(null);
+  const [locationInput, setLocationInput] = useState("");
+  const [locationOptions, setLocationOptions] = useState([]);
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
     setChatSession(createChatSession());
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const loadSuggestions = async () => {
+      const query = locationInput.trim();
+      if (!query) {
+        setLocationOptions([]);
+        return;
+      }
+
+      try {
+        setIsLocationLoading(true);
+        const suggestions = await fetchPlaceSuggestions(query);
+        setLocationOptions(suggestions);
+      } catch (error) {
+        console.error("Error fetching location suggestions:", error);
+      } finally {
+        setIsLocationLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(loadSuggestions, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [locationInput]);
 
   const buildFallbackTrip = (formData) => {
     const totalDays = parseInt(formData?.no_of_days) || 1;
@@ -229,20 +260,22 @@ function CreateTrip() {
     }
   };
   
-  const GetUserProfile = async(tokenInfo) => {
-    axios.get
-    (`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,{
-      headers:{
-        Authorization: `Bearer ${tokenInfo?.access_token}`,
-        Accept: 'Application/json',
-      }
-    }).then((response)=>{
-      console.log(response);
-      
-      localStorage.setItem('user', JSON.stringify(response.data));
+  const GetUserProfile = async (tokenInfo) => {
+    try {
+      const res = await axios.post('/api/auth/google', {
+        access_token: tokenInfo?.access_token,
+      });
+
+      const userData = res.data.user;
+      console.log('Google user profile via backend:', userData);
+
+      localStorage.setItem('user', JSON.stringify(userData));
       setOpenDialog(false);
       onGenerateTrip(true); // Call generate trip again after successful login
-    });
+    } catch (error) {
+      console.error('Error verifying Google login via backend:', error);
+      toast.error('Failed to sign in with Google');
+    }
   };
   
   const SavedAiTrip = async(tripData) => {
@@ -290,18 +323,44 @@ function CreateTrip() {
           <h2 className="text-xl my-3 font-medium ">
             What is your destination of choice?
           </h2>
-          <GooglePlacesAutocomplete
-            apiKey={import.meta.env.VITE_GOOGLE_PLACE_API_KEY}
-            selectProps={{
-              place,
-              className: "w-full text-base",
-              placeholder: "Search a destination...",
-              onChange: (value) => {
-                setPlace(value);
-                handleInputChange("location", value);
-              },
-            }}
-          />
+          <div className="relative">
+            <input
+              type="text"
+              value={locationInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setLocationInput(value);
+              }}
+              placeholder="Search a destination..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {isLocationLoading && (
+              <div className="absolute right-3 top-2.5 text-xs text-gray-500">
+                Loading...
+              </div>
+            )}
+            {locationOptions.length > 0 && (
+              <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-xl mt-1 max-h-60 overflow-auto shadow-lg">
+                {locationOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+                    onClick={() => {
+                      setLocationInput(option.label);
+                      setPlace(option);
+                      handleInputChange("location", option);
+                      setLocationOptions([]);
+                    }}
+                  >
+                    <div className="font-medium">{option.label}</div>
+                    {option.value?.address && (
+                      <div className="text-xs text-gray-500">{option.value.address}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <h2 className="text-xl my-3 font-medium">

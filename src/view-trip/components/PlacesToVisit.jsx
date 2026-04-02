@@ -34,8 +34,7 @@ function PlacesToVisit({ trip }) {
 
             if (result.data?.places?.[0]?.photos?.[0]?.name){
               const photoName = result.data.places[0].photos[0].name;
-              const apiKey = import.meta.env.VITE_GOOGLE_PLACE_API_KEY;
-              const photoUrl = `https://places.googleapis.com/v1/${photoName}/media?maxHeightPx=400&maxWidthPx=600&key=${apiKey}`;
+              const photoUrl = `/api/places/photo?photoName=${encodeURIComponent(photoName)}&maxHeightPx=400&maxWidthPx=600`;
               newPlaceImages[place.placeName] = photoUrl;
             }
           } catch (error) {
@@ -75,7 +74,7 @@ function PlacesToVisit({ trip }) {
                 {itinerary[dayKey].places.map((place, index) => (
                   <div key={index} className="mb-4 border rounded-lg overflow-hidden">
                     <img
-                      src={placeImages[place.placeName] || place.placeImageUrl || trip_img}
+                      src={placeImages[place.placeName] || trip_img}
                       alt={place.placeName}
                       className="w-full h-40 object-cover"
                       crossOrigin="anonymous"
