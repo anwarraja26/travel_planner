@@ -9,7 +9,6 @@ const Weather = () => {
   const handleCityChange = (e) => {
     setCity(e.target.value);
   };
-
   const handleGetWeather = async () => {
     if (!city) {
       return setError("Please enter a city name.");
