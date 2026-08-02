@@ -21,7 +21,6 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
 });
 
-// Google OAuth helper: exchange access_token for user profile
 app.post('/api/auth/google', async (req, res) => {
   try {
     const { access_token } = req.body || {};
@@ -61,7 +60,6 @@ app.post('/api/auth/google', async (req, res) => {
 });
 
 
-// AI trip planner endpoint
 app.post('/api/ai-plan', async (req, res) => {
   try {
     const { messages } = req.body;
@@ -93,7 +91,6 @@ app.post('/api/ai-plan', async (req, res) => {
   }
 });
 
-// Google Places search endpoint
 app.post('/api/places/search', async (req, res) => {
   try {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
@@ -115,12 +112,7 @@ app.post('/api/places/search', async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': [
-          'places.photos',
-          'places.displayName',
-          'places.id',
-          'places.formattedAddress',
-        ],
+        'X-Goog-FieldMask': 'places.photos,places.displayName,places.id,places.formattedAddress',
       },
       body: JSON.stringify(data),
     });
@@ -140,7 +132,6 @@ app.post('/api/places/search', async (req, res) => {
   }
 });
 
-// Google Places photo proxy endpoint
 app.get('/api/places/photo', async (req, res) => {
   try {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
@@ -165,7 +156,6 @@ app.get('/api/places/photo', async (req, res) => {
       return res.status(response.status).json({ error: message });
     }
 
-    // Pipe content-type and binary body through to the client
     const contentType = response.headers.get('content-type') || 'image/jpeg';
     res.setHeader('Content-Type', contentType);
 
@@ -178,7 +168,6 @@ app.get('/api/places/photo', async (req, res) => {
   }
 });
 
-// Simple autocomplete endpoint using Places Text Search
 app.get('/api/places/autocomplete', async (req, res) => {
   try {
     const apiKey = process.env.GOOGLE_PLACES_API_KEY;
@@ -192,21 +181,17 @@ app.get('/api/places/autocomplete', async (req, res) => {
       return res.status(400).json({ error: 'input query parameter is required.' });
     }
 
-    const url = 'https://places.googleapis.com/v1/places:searchText';
+    const url = 'https://places.googleapis.com/v1/places:autocomplete';
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': [
-          'places.displayName',
-          'places.id',
-          'places.formattedAddress',
-        ],
+        'X-Goog-FieldMask': 'suggestions.placePrediction.text.text,suggestions.placePrediction.placeId,suggestions.placePrediction.structuredFormat',
       },
       body: JSON.stringify({
-        textQuery: input,
+        input,
       }),
     });
 
@@ -219,14 +204,17 @@ app.get('/api/places/autocomplete', async (req, res) => {
 
     const result = await response.json();
 
-    const suggestions = (result.places || []).map((place) => ({
-      label: place.displayName?.text || place.formattedAddress || 'Unknown place',
-      value: {
-        name: place.displayName?.text || '',
-        address: place.formattedAddress || '',
-        id: place.id,
-      },
-    }));
+    const suggestions = (result.suggestions || [])
+      .map((suggestion) => suggestion.placePrediction)
+      .filter(Boolean)
+      .map((placePrediction) => ({
+        label: placePrediction.text?.text || placePrediction.structuredFormat?.mainText?.text || 'Unknown place',
+        value: {
+          name: placePrediction.structuredFormat?.mainText?.text || placePrediction.text?.text || '',
+          address: placePrediction.structuredFormat?.secondaryText?.text || '',
+          id: placePrediction.placeId,
+        },
+      }));
 
     return res.json({ suggestions });
   } catch (error) {

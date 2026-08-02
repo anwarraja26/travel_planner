@@ -6,6 +6,15 @@ function PlacesToVisit({ trip }) {
   const [placeImages, setPlaceImages] = useState({});
   const itinerary = trip?.tripData?.travelPlan?.itinerary;
 
+  const getPlacesForDay = (dayPlan) => {
+    if (Array.isArray(dayPlan?.places)) return dayPlan.places;
+    if (Array.isArray(dayPlan?.place)) return dayPlan.place;
+    if (Array.isArray(dayPlan?.placesToVisit)) return dayPlan.placesToVisit;
+    return [];
+  };
+
+  const getPlaceLabel = (place, index) => place?.placeName || place?.name || place?.title || place?.placeDetails || `Place ${index + 1}`;
+
   const dayKeys = itinerary
     ? Object.keys(itinerary).sort((a, b) => {
         const dayNumA = parseInt(a.replace('day', ''));
@@ -24,21 +33,25 @@ function PlacesToVisit({ trip }) {
     const newPlaceImages = {};
 
     for (const dayKey of dayKeys) {
-      if (Array.isArray(itinerary[dayKey].places)) {
-        for (const place of itinerary[dayKey].places) {
-          try {
-            if (placeImages[place.placeName] || newPlaceImages[place.placeName]) continue;
+      const dayPlaces = getPlacesForDay(itinerary[dayKey]);
 
-            const data = { textQuery: place.placeName };
+      if (dayPlaces.length > 0) {
+        for (const [index, place] of dayPlaces.entries()) {
+          const placeLabel = getPlaceLabel(place, index);
+
+          try {
+            if (placeImages[placeLabel] || newPlaceImages[placeLabel]) continue;
+
+            const data = { textQuery: placeLabel };
             const result = await GetPlaceDetails(data);
 
             if (result.data?.places?.[0]?.photos?.[0]?.name){
               const photoName = result.data.places[0].photos[0].name;
               const photoUrl = `/api/places/photo?photoName=${encodeURIComponent(photoName)}&maxHeightPx=400&maxWidthPx=600`;
-              newPlaceImages[place.placeName] = photoUrl;
+              newPlaceImages[placeLabel] = photoUrl;
             }
           } catch (error) {
-            console.error(`Error fetching image for ${place.placeName}:`, error);
+            console.error(`Error fetching image for ${placeLabel}:`, error);
           }
         }
       }
@@ -69,20 +82,23 @@ function PlacesToVisit({ trip }) {
           <div key={dayKey} className="p-4 border rounded-lg shadow">
             <h2 className="font-medium text-lg mb-3">{dayKey}</h2>
 
-            {Array.isArray(itinerary[dayKey].places) ? (
+            {getPlacesForDay(itinerary[dayKey]).length > 0 ? (
               <div>
-                {itinerary[dayKey].places.map((place, index) => (
+                {getPlacesForDay(itinerary[dayKey]).map((place, index) => {
+                  const placeLabel = getPlaceLabel(place, index);
+
+                  return (
                   <div key={index} className="mb-4 border rounded-lg overflow-hidden">
                     <img
-                      src={placeImages[place.placeName] || trip_img}
-                      alt={place.placeName}
+                      src={placeImages[placeLabel] || trip_img}
+                      alt={placeLabel}
                       className="w-full h-40 object-cover"
                       crossOrigin="anonymous"
                       referrerPolicy="no-referrer"
-                      onError={() => handleImageError(place.placeName)}
+                      onError={() => handleImageError(placeLabel)}
                     />
                     <div className="p-3">
-                      <h3 className="font-bold text-base">{place.placeName}</h3>
+                      <h3 className="font-bold text-base">{placeLabel}</h3>
                       <p className="text-sm text-gray-600 mt-1">{place.placeDetails}</p>
                       {place.timeSpent && (
                         <p className="text-m-b mt-2">
@@ -91,7 +107,7 @@ function PlacesToVisit({ trip }) {
                       )}
 
                       <button
-                        onClick={() => openInGoogleMaps(place.placeName)}
+                        onClick={() => openInGoogleMaps(placeLabel)}
                         className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-md text-sm flex items-center"
                       >
                         <svg
@@ -118,7 +134,8 @@ function PlacesToVisit({ trip }) {
                       </button>
                     </div>
                   </div>
-                ))}
+                );
+                })}
               </div>
             ) : (
               <p>No places planned for this day</p>

@@ -58,6 +58,10 @@ export const AI_PROMPT= `Generate a travel plan JSON for:
 
 CRITICAL REQUIREMENT: You MUST generate exactly {totalDays} days in the itinerary. If {totalDays} is 3, you must generate day1, day2, and day3. If {totalDays} is 5, you must generate day1, day2, day3, day4, and day5. Do NOT default to only 1 day.
 
+CRITICAL REQUIREMENT: Each day must contain 3 to 4 real, specific places to visit. Do not use generic names like "Highlights", "Sightseeing", or "Daytime" as place names. Each placeName must be a distinct attraction, landmark, viewpoint, market, museum, beach, or similar location that a traveler can actually visit in {location}.
+
+CRITICAL REQUIREMENT: The itinerary must be destination-specific. If the location is Kerala, do not return "Kerala Highlights". Return actual places such as beaches, waterfalls, temples, viewpoints, markets, or cultural spots relevant to Kerala.
+
 Return ONLY valid JSON with NO additional text, following this exact structure:
 {
   "travelPlan": {
